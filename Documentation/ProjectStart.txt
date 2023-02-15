@@ -1,0 +1,44 @@
+﻿From several sources I came to the following procedure to make an "empty" ASP.NET into something that will work as I want it to work:
+
+- Create new Project (ASP.NET Core leer)
+- Add folder wwwroot to project
+- Add folder css to wwwroot
+- Create css
+- Add folder pages to project
+- Add folder Shared to Pages
+- Add new razor-layout document (_Layout.cshtml)
+- Add stylesheet path to _Layout (<link rel="stylesheet" href="~/css/style.css" />) *
+- Put the desired html-structure in the Layout. 
+- Add @RenderBody() where the individual page content shall be put in
+- Add new Razor Import to pages (_ViewImports.cshtml)
+//- Add line @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+- Add the _ViewStart.cshtml page with the following content:
+@{
+    Layout = "_Layout";
+}
+(can be found by searching razor)
+- In startup, change endpoints from
+endpoints.MapGet("/", async context =>
+                {
+                    await context.Response.WriteAsync("Hello World!");
+                });
+To
+endpoints.MapRazorPages();
+         
+
+// ~ is wwwroot by default
+to change the root, go to Program.cs:
+public static IHostBuilder CreateHostBuilder(string[] args) =>
+            Host.CreateDefaultBuilder(args)
+                .ConfigureWebHostDefaults(webBuilder =>
+                {
+                    webBuilder.UseStartup<Startup>();
+                });
+And change it to
+//webBuilder.UseStartup<Startup>().UseWebRoot("sth");
+
+
+Also add  app.UseStaticFiles(); in method Configure
+Add services.AddRazorPages(); to the method 
+public void ConfigureServices(IServiceCollection services)
+Add Index.cshtml to Pages folder and put the specific web content that’s not yet in your layout (after the initial lines with @ , not inside the {}!)
