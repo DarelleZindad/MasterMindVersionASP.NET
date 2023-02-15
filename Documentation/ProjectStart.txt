@@ -1,4 +1,4 @@
-﻿From several sources I came to the following procedure to make an "empty" ASP.NET into something that will work as I want it to work:
+﻿From several sources on the web I came to the following procedure to make an "empty" ASP.NET into something that will work as I want it to work:
 
 - Create new Project (ASP.NET Core leer)
 - Add folder wwwroot to project
@@ -6,8 +6,11 @@
 - Create css
 - Add folder pages to project
 - Add folder Shared to Pages
-- Add new razor-layout document (_Layout.cshtml)
-- Add stylesheet path to _Layout (<link rel="stylesheet" href="~/css/style.css" />) *
+- Add new razor-layout document (_Layout.cshtml) to shared
+- Add stylesheet path to _Layout (<link rel="stylesheet" href="~/css/style.css" />) 
+// ~ is wwwroot by default
+// to change the root, go to CreateHostBuilder in Program.cs and add .UseWebRoot("sth"); to webBuilder.UseStartup<Startup>();
+
 - Put the desired html-structure in the Layout. 
 - Add @RenderBody() where the individual page content shall be put in
 - Add new Razor Import to pages (_ViewImports.cshtml)
@@ -22,23 +25,15 @@ endpoints.MapGet("/", async context =>
                 {
                     await context.Response.WriteAsync("Hello World!");
                 });
-To
+to
 endpoints.MapRazorPages();
+
+- Also add  app.UseStaticFiles(); in method Configure
+- Add services.AddRazorPages(); to the method 
+  public void ConfigureServices(IServiceCollection services)
+- Add Index.cshtml to Pages folder and put the specific web content that’s not yet in your layout (after the initial lines with @ , not inside the {}!)
          
 
-// ~ is wwwroot by default
-to change the root, go to Program.cs:
-public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    webBuilder.UseStartup<Startup>();
-                });
-And change it to
-//webBuilder.UseStartup<Startup>().UseWebRoot("sth");
 
 
-Also add  app.UseStaticFiles(); in method Configure
-Add services.AddRazorPages(); to the method 
-public void ConfigureServices(IServiceCollection services)
-Add Index.cshtml to Pages folder and put the specific web content that’s not yet in your layout (after the initial lines with @ , not inside the {}!)
+

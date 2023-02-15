@@ -1,0 +1,258 @@
+﻿:root {
+    --lightColor: #000913;
+    --mediumColor: #00172a;
+    --darkColor: #002748;
+    --lightFont: #cee7ff;
+    /* --lightColor: #222279;
+    --darkColor: #2f2fb3;
+    --lightFont: #d5d5fa; */
+}
+
+
+body {
+    margin: 0%;
+    background-color: var(--darkColor);
+    color: #dddbfd;
+    color: var(--lightFont);
+    font-family: 'Dosis', sans-serif;
+    font-family: 'Titillium Web', sans-serif;
+    font-weight: lighter;
+    /* font-family: 'Zen Kaku Gothic Antique', sans-serif;*/
+    /* padding: 1em; */
+    font-size: 1.4em;
+    display: grid;
+    grid-template-columns: 240px 1fr 240px;
+    grid-template-rows: auto auto;
+    grid-template-areas:
+        "header header header"
+        "settingsShow mainbody intro";
+}
+/*grid stuff*/
+main {
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 30px;
+    margin-left: 30px;
+    /* margin-top: 10vh; */
+    grid-area: mainbody;
+    display: grid;
+    grid-template-columns: 1fr 4fr;
+    grid-template-rows: auto auto;
+    grid-template-areas:
+        /* "header header" */
+        "settingsSet settingsSet"
+        "answer code"
+        "answer spielfeld";
+}
+
+
+
+
+
+#idIntro, #settingsShow {
+    /* position:   fixed; */
+    padding: 1em;
+    top: 0;
+    padding-top: 20px;
+    /* width: 220px; */
+    min-height: 90vh;
+    background-color: var(--mediumColor);
+    /* color: var(--darkColor); */
+    /* color: black; */
+    /* z-index: 250; */
+}
+
+header {
+    margin: 0%;
+    grid-area: header;
+    text-align: center;
+    background-color: rgb(54, 0, 54);
+    background-color: var(--lightColor);
+    /* width: 100vw; */
+    height: 150px;
+    border-bottom: var(--darkColor) 2px solid;
+    color: var(--lightFont);
+    /* z-index: 100; */
+}
+
+
+
+#idIntro {
+    grid-area: intro;
+    right: 0%;
+}
+
+#settingsShow {
+    grid-area: settingsShow;
+    left: 0%;
+}
+
+
+
+#settingsSet {
+    grid-area: settingsSet;
+    text-align: center;
+}
+
+#idCode {
+    grid-area: code;
+    /* background-color: black; */
+}
+
+#spielfeld {
+    grid-area: spielfeld;
+}
+
+#idAnswer {
+    grid-area: answer;
+    text-align: left;
+    border-right: var(--lightColor 2px solid);
+}
+
+    #idAnswer button {
+        width: 80%;
+    }
+
+footer {
+    grid-area: footer;
+}
+
+h1 {
+    font-family: 'Dancing Script', cursive;
+    padding: 0%;
+    margin: 0%;
+    padding-top: 0.5em;
+    /* color: var(--darkColor); */
+}
+
+h2 {
+    padding: 0px;
+    margin: 0%;
+    /* color: var(--darkColor); */
+}
+
+#idShowCode {
+    display: none;
+}
+
+
+
+input,
+button {
+    font-family: 'Zen Kaku Gothic Antique', sans-serif;
+    font-family: 'Dancing Script', cursive;
+    font-size: 1em;
+    margin-right: 0.5em;
+    padding: 0em 0.5em;
+}
+
+input {
+    width: 1.5em;
+}
+
+button {
+    border-radius: 0.2em;
+    margin: 2px;
+}
+
+
+
+#addStuffHere {
+    display: none;
+}
+
+table {
+    margin: 10px 0px;
+}
+
+.tabletext {
+    border: none;
+    min-width: 5em;
+    vertical-align: middle;
+}
+
+td {
+    border: 1px dotted white;
+    padding: 0.1em 0.3em;
+    min-width: 1em;
+    border-radius: 1em;
+    min-height: 0.5em;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0em;
+    margin: 0px;
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    padding-inline-start: 0px;
+}
+
+.answer {
+    width: 5px;
+    height: 5px;
+}
+
+label {
+    width: 10em;
+}
+
+
+
+.codeToAnswer {
+    border: none;
+    display: flex;
+}
+
+input[type=checkbox],
+input[type=radio] {
+    /* Double-sized Checkboxes */
+    -ms-transform: scale(1.5);
+    /* IE */
+    -moz-transform: scale(1.5);
+    /* FF */
+    -webkit-transform: scale(1.5);
+    /* Safari and Chrome */
+    -o-transform: scale(1.5);
+    /* Opera */
+    transform: scale(1.5);
+}
+
+.flex {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.flexdown {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    flex-wrap: wrap;
+}
+
+.flex div {
+    margin-right: 3em;
+}
+
+.stayLeft {
+    text-align: left;
+}
+
+.pickColor {
+    /*class not in html, bc it's the class of the to be created color buttons*/
+    min-width: 1.4em;
+    min-height: 1.4em;
+    /* max-height: 1.2em;*/
+    margin: 0.2em;
+}
+
+    .pickColor:hover {
+        transform: scale(1.4);
+    }
+
+.griddy {
+    padding: 0.5em;
+}
