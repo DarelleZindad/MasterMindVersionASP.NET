@@ -1,0 +1,7 @@
+﻿15022023
+- css is copied, needs to be structured
+- html and js are not copied yet. might want to copy stuff bitwise
+- make a real plan
+
+
+

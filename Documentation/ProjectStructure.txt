@@ -13,8 +13,6 @@
 
 - Put the desired html-structure in the Layout. 
 - Add @RenderBody() where the individual page content shall be put in
-- Add new Razor Import to pages (_ViewImports.cshtml)
-//- Add line @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 - Add the _ViewStart.cshtml page with the following content:
 @{
     Layout = "_Layout";
@@ -28,7 +26,7 @@ endpoints.MapGet("/", async context =>
 to
 endpoints.MapRazorPages();
 
-- Also add  app.UseStaticFiles(); in method Configure
+- Also add app.UseStaticFiles(); in method Configure
 - Add services.AddRazorPages(); to the method 
   public void ConfigureServices(IServiceCollection services)
 - Add Index.cshtml to Pages folder and put the specific web content that’s not yet in your layout (after the initial lines with @ , not inside the {}!)
