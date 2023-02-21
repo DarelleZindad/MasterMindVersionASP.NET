@@ -24,27 +24,32 @@ main {
         "answer spielfeld";
 }
 
-
+/*display rules*/
 #idIntro {
     grid-area: intro;
 }
 
+/*display chosen settings*/
 #settingsShow {
     grid-area: settingsShow;
 }
 
+/*set settings: who is guessing? how many colors? how many slots?*/
 #settingsSet {
     grid-area: settingsSet;
 }
 
+/*enter next code*/
 #idCode {
     grid-area: code;
 }
 
+/*display codes*/
 #spielfeld {
     grid-area: spielfeld;
 }
 
+/*buttons for autoguess, autosolve, answer*/
 #idAnswer {
     grid-area: answer;
 }
