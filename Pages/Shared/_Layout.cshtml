@@ -14,6 +14,8 @@
     <!--used stylesheets-->
     <link href="~/css/StyleSheet.css" rel="stylesheet" />
     <link href="~/css/GridLayout.css" rel="stylesheet" />
+    <link href="~/css/Colors.css" rel="stylesheet" />
+
     <!--jQuery-->
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 
@@ -21,9 +23,23 @@
 <body>
     <header>
         <h1>@ViewBag.Headline</h1>
+        <h2>@ViewBag.SubHeadline</h2>
     </header>
-    
+
+    @*display chosen settings, position of the section is defined in GridLayout.css*@
+    <div id="settingsShow" class="griddy">
+       @RenderSection("DisplaySettings")
+    </div>
+
+    @*display rules, position of the section is defined in GridLayout.css*@
+    <section id="idIntro" class="griddy">
+        @RenderSection("DisplayRules")
+    </section>
+
+    @*main content*@
+    <main>
         @RenderBody()
-   
+    </main>
+
 </body>
 </html>

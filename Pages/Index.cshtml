@@ -1,21 +1,25 @@
 ﻿@page
 @model MasterMindVersionASP.NET.Pages.IndexModel
 @{
-    //the title and headline to be displayed on my tab.
+    //the title and headlines to be displayed on my tab.
     //If I were to add pages that are not MasterMind, this can't be put in Layout
     string title = "MasterMind";
     ViewBag.Title = title;
     ViewBag.Headline = title;
+    ViewBag.SubHeadline = "Cracking the color code";
 }
-<div id="settingsShow" class="griddy">
-    <h3>Settings</h3>
 
-    <p id="idSettings">Please choose your playstyle!</p>
-    <button id="newGame" onclick="reload()">New Game</button>
-</div>
+@section DisplaySettings
+{
+        <h3>Settings</h3>
 
-<section id="idIntro" class="griddy">
-    <h3>Rules</h3>
+        <p id="idSettings">Please choose your playstyle!</p>
+        <button id="newGame" onclick="reload()">New Game</button>   
+}
+
+@section DisplayRules
+{   
+<h3>Rules</h3>
     <p>
         Every guessed color that's in the code gets either an "x" or an "o", depending on the position:
         <ul>
@@ -24,16 +28,12 @@
         </ul>
         The order of 'x's and 'o's does <em>not</em> represent the order of the color code.
     </p>
-
-</section>
-<!--<header class="griddy">-->
-    <!--Headline and introduction-->
-    <!--<h1>MasterMind</h1>
-    <h2>Cracking the color code</h2>
-</header>-->
+}
 
 
-<main>
+
+
+
     <aside id="settingsSet" class="griddy">
         <!--Game settings------------------------------------->
 
@@ -128,4 +128,14 @@
         <button class="plGuess" onclick="plAutosolve()">autosolve</button>
         <p></p>
     </aside>
-</main>
+
+    <script src="~/javascript/JavaScript.js"></script>
+    <script>
+        "use strict";
+
+        //on loading the page, hide stuff we don't need yet
+        $("#idCode").hide();
+        $("#spielfeld").hide();
+        $("#idAnswer").hide();
+
+    </script>
