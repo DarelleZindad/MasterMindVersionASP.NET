@@ -20,29 +20,14 @@ body {
     /* font-family: 'Zen Kaku Gothic Antique', sans-serif;*/
     /* padding: 1em; */
     font-size: 1.4em;
-    display: grid;
-    grid-template-columns: 240px 1fr 240px;
-    grid-template-rows: auto auto;
-    grid-template-areas:
-        "header header header"
-        "settingsShow mainbody intro";
 }
-/*grid stuff*/
+
+
 main {
     padding-left: 20px;
     padding-right: 20px;
     padding-top: 30px;
-    margin-left: 30px;
-    /* margin-top: 10vh; */
-    grid-area: mainbody;
-    display: grid;
-    grid-template-columns: 1fr 4fr;
-    grid-template-rows: auto auto;
-    grid-template-areas:
-        /* "header header" */
-        "settingsSet settingsSet"
-        "answer code"
-        "answer spielfeld";
+    margin-left: 30px;    
 }
 
 
@@ -50,61 +35,41 @@ main {
 
 
 #idIntro, #settingsShow {
-    /* position:   fixed; */
     padding: 1em;
     top: 0;
     padding-top: 20px;
-    /* width: 220px; */
     min-height: 90vh;
     background-color: var(--mediumColor);
-    /* color: var(--darkColor); */
-    /* color: black; */
-    /* z-index: 250; */
 }
 
 header {
     margin: 0%;
-    grid-area: header;
     text-align: center;
     background-color: rgb(54, 0, 54);
     background-color: var(--lightColor);
-    /* width: 100vw; */
     height: 150px;
     border-bottom: var(--darkColor) 2px solid;
     color: var(--lightFont);
-    /* z-index: 100; */
 }
 
 
 
 #idIntro {
-    grid-area: intro;
     right: 0%;
 }
 
 #settingsShow {
-    grid-area: settingsShow;
     left: 0%;
 }
 
 
 
 #settingsSet {
-    grid-area: settingsSet;
     text-align: center;
 }
 
-#idCode {
-    grid-area: code;
-    /* background-color: black; */
-}
-
-#spielfeld {
-    grid-area: spielfeld;
-}
 
 #idAnswer {
-    grid-area: answer;
     text-align: left;
     border-right: var(--lightColor 2px solid);
 }
@@ -113,9 +78,6 @@ header {
         width: 80%;
     }
 
-footer {
-    grid-area: footer;
-}
 
 h1 {
     font-family: 'Dancing Script', cursive;

@@ -1,5 +1,131 @@
 ﻿@page
 @model MasterMindVersionASP.NET.Pages.IndexModel
 @{
+    //the title and headline to be displayed on my tab.
+    //If I were to add pages that are not MasterMind, this can't be put in Layout
+    string title = "MasterMind";
+    ViewBag.Title = title;
+    ViewBag.Headline = title;
 }
-    <p>sth</p>
+<div id="settingsShow" class="griddy">
+    <h3>Settings</h3>
+
+    <p id="idSettings">Please choose your playstyle!</p>
+    <button id="newGame" onclick="reload()">New Game</button>
+</div>
+
+<section id="idIntro" class="griddy">
+    <h3>Rules</h3>
+    <p>
+        Every guessed color that's in the code gets either an "x" or an "o", depending on the position:
+        <ul>
+            <li>x: correct position</li>
+            <li>o: wrong position</li>
+        </ul>
+        The order of 'x's and 'o's does <em>not</em> represent the order of the color code.
+    </p>
+
+</section>
+<!--<header class="griddy">-->
+    <!--Headline and introduction-->
+    <!--<h1>MasterMind</h1>
+    <h2>Cracking the color code</h2>
+</header>-->
+
+
+<main>
+    <aside id="settingsSet" class="griddy">
+        <!--Game settings------------------------------------->
+
+        <h3>Settings</h3>
+        <div class="flex">
+            <div class="stayLeft">
+                <p>
+                    <input id="idAnzFarben" type="number" min="2" max="25" value="8">
+                    <label for="idAnzFarben">different colours</label>
+                </p>
+                <p>
+                    <input id="idAnzStecker" type="number" min="2" max="20" value="5">
+                    <label for="idAnzStecker">digits to guess</label>
+                </p>
+                <p>
+                    <input id="idDoubles" type="checkbox">
+                    <label for="idDoubles">allow multiple use of same color</label>
+                </p>
+            </div>
+
+            <div class="stayLeft">
+                <p>Who does the guessing?</p>
+                <p>
+                    <input id="pl" type="radio" name="whoGuesses" checked="true">
+                    <label for="pl">Player</label>
+                </p>
+                <p>
+                    <input id="cp" type="radio" name="whoGuesses">
+                    <label for="cp">Computer</label>
+                </p>
+            </div>
+        </div>
+        <button onclick="startGame()">Start Game</button>
+    </aside>
+
+    <section id="idCode" class="griddy">
+        <div class="flexdown">
+            Click to put Color in the Code:
+            <div class="flex">
+
+                <!--This is where the color buttons will be added-->
+                <!--the invisble guideline-->
+                <hr id="addStuffHere">
+                <!--this is where the code will be entered-->
+            </div>
+            <table>
+                <tr>
+                    <td id="idTable" class="tabletext">Your code: </td>
+                </tr>
+            </table>
+
+            <div id=idCreateCode>
+                <button onclick="undoColor()">Undo a color</button>
+                <button class="cpGuess" id="btnSubmitCode" onclick="submitCode()">submitCode</button>
+                <button class="plGuess" id="btnGuess" onclick="takeGuess()">takeGuess</button>
+            </div>
+        </div>
+    </section>
+
+    <section id="spielfeld" class="griddy">
+        <!--and here the results will be shown-->
+        <hr id="idGuessedCode">
+        <p id="idDoubleGuesses"></p>
+        <p id="idImpossible"></p>
+        <p id="idPossible"></p>
+        <button id="idBtnSolShow" class="plGuess" onclick="showSolution()">show Solution</button>
+    </section>
+
+    <aside id="idAnswer" class="griddy">
+        <p></p>
+        <div class="cpGuess">
+            <p> Give an answer:</p>
+            <p>
+                <label for="idX">
+                    x:
+                </label>
+                <input id=idX type="number" value="0">
+            </p>
+            <p>
+                <label for="idO">
+                    o:
+                </label>
+                <input id=idO type="number" value="0">
+            </p>
+
+            <button onclick="giveAnswer()">answer</button>
+        </div>
+
+        <button class="cpGuess" onclick="answer()">autoanswer</button>
+        <button class="cpGuess" onclick="cpAutosolve()">autosolve</button>
+        <button class="plGuess" onclick="autoguess()">autoguess</button>
+        <button class="plGuess" onclick="plAutosolve()">autosolve</button>
+        <p></p>
+    </aside>
+</main>

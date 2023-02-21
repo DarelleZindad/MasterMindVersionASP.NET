@@ -1,0 +1,69 @@
+﻿body {
+    display: grid;
+    grid-template-columns: 240px 1fr 240px;
+    grid-template-rows: auto auto;
+    grid-template-areas:
+        "header header header"
+        "settingsShow mainbody intro";
+
+}
+
+
+header {
+    grid-area: header;
+}
+
+main {   
+    grid-area: mainbody;
+    display: grid;
+    grid-template-columns: 1fr 4fr;
+    grid-template-rows: auto auto;
+    grid-template-areas:
+        "settingsSet settingsSet"
+        "answer code"
+        "answer spielfeld";
+}
+
+
+#idIntro {
+    grid-area: intro;
+}
+
+#settingsShow {
+    grid-area: settingsShow;
+}
+
+#settingsSet {
+    grid-area: settingsSet;
+}
+
+#idCode {
+    grid-area: code;
+}
+
+#spielfeld {
+    grid-area: spielfeld;
+}
+
+#idAnswer {
+    grid-area: answer;
+}
+
+footer {
+    grid-area: footer;
+}
+
+.griddy {
+    padding: 0.5em;
+}
+
+
+
+
+
+
+
+
+
+
+
