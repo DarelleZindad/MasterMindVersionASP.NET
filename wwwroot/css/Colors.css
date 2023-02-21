@@ -1,0 +1,29 @@
+﻿:root {
+    --lightColor: #000913;
+    --mediumColor: #00172a;
+    --darkColor: #002748;
+    --lightFont: #cee7ff;
+}
+
+
+body {
+    background-color: var(--darkColor);
+    color: var(--lightFont);  
+}
+
+#idIntro, #settingsShow {    
+    background-color: var(--mediumColor);
+}
+
+header {
+    background-color: var(--lightColor);
+    color: var(--lightFont);
+    border-bottom: var(--darkColor) 15px solid;
+}
+
+
+
+
+
+
+
