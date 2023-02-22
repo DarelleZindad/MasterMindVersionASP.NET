@@ -300,25 +300,7 @@ function calculateAnswer(codeToCheck, codeToCompareWith) {
     white -= red;
 }
 
-function calculatePossibleCodes() {
-    //anzahl berechnen
-    let totalCount = 1;
-    //mit doppelten
-    if (doubles)
-        for (let i = 0; i < positionCount; i++) {
-            totalCount *= (colorCount);
-        }
-    //ohne doppelten
-    else {
 
-        let clCt = colorCount;
-        for (let i = 0; i < positionCount; i++) {
-            totalCount *= (clCt);
-            clCt--;
-        }
-    }
-    return totalCount;
-}
 
 function reload() {
     //easiest way to get rid of all the added stuff for a new game: reload the page
