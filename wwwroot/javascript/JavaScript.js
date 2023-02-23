@@ -97,8 +97,6 @@ function showSolution() {
 
 }
 
-
-
 function cpGuesses() {
     guess++;
     do {
@@ -148,7 +146,6 @@ function createCode() {
     }
     return newCode;
 }
-
 
 /* This function was created to reduce randomness in computer guessing
  * if the total possible codes doesn't exceed 90k, 
@@ -229,7 +226,6 @@ function removeDoubles() {
     $("#idPossible").text("codes possible: " + allPossibleCodes.length);
 }
 
-
 function checkIfCodeIsValid() {
     let valid = true;
 
@@ -290,8 +286,6 @@ function createAndColorTablerow() {
         $(getClass)[i].style.backgroundColor = guessedCode[i];
     }
 }
-
-
 
 function giveAnswer() {
     // let result = " ";
@@ -404,13 +398,6 @@ function calculateAnswer(codeToCheck, codeToCompareWith) {
 
     //white is now ALL colors in the code, so I need to remove the amount of red
     white -= red;
-}
-
-
-
-function reload() {
-    //easiest way to get rid of all the added stuff for a new game: reload the page
-    location.reload();
 }
 
 

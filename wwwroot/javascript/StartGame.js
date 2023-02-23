@@ -1,6 +1,13 @@
 ﻿"use strict";
 
+//called when button "New Game" is clicked
+function reload() {
+    //easiest way to get rid of all the added stuff for a new game: reload the page
+    location.reload();
+}
+
 /* On starting the game:
+ (clicking button "Start Game" on the "set settings" part of the page)
 
 ~~~ applySettings ~~~
  Set global variable values according to chosen settings 
