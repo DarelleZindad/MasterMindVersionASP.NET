@@ -11,7 +11,6 @@ let doubles;
 let guesser;
 let codeToGuess = [];
 let guessedCode = [];
-let usedColors = [];
 let positionInOwnCode = 0;
 let guess = 0;
 let allGuessedCodes = [];

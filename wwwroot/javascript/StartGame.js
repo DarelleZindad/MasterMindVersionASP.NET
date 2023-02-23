@@ -1,35 +1,67 @@
 ﻿"use strict";
 
-//variables needed
+/* On starting the game:
+
+~~~ applySettings ~~~
+ Set global variable values according to chosen settings 
+ * colorCount:      number of colors
+ * positionCount:   number of slots
+ * doubles:         use of double colors in code
+ * guesser:         "Player" || "Computer"
+ 
+~~~ createColorButtons ~~~
+* creates colored buttons to pick the code
+  and adds them before the invisible <hr> with the id "addStuffHere"
+
+~~~ createInputField ~~~
+* Adds <td>s according to slot count to the table to display own code
+* marks current position
+
+=== if player is guessing, code is created and put on field here, else it's done later ===
+~~~ codeToGuess = createCode() ~~~
+call method from 
+!!!
+!!!
+(whatever file will be called in the end) to generate a random code
+!!!
+!!!
+and set it as value for global variable codeToGuess
+
+~~~ putSolutionOnField ~~~
+* write the Solution in a hidden area so it can be displayed on button click 
+===========================================================================================
+
+~~~ setUpFieldForGame ~~~
+* hides or shows areas/elements on the page based on who does the guessing
+* hides area to choose settings and shows area to play
+
+~~~ calculatePossibleCodes ~~~
+*calculates the amount of total possible codes
+ so it can be shown in the settings display
+
+~~~ displaySettings ~~~
+*Constructs the string for displaying the settings
+ and writes it into the according section
+
+*/
 
 
-
-//on Start
 function startGame() {
-    //apply settings
-    applySettings(); //✔
+    applySettings(); 
 
-    //create the area where code is entered
-    createColorButtons(); //✔
-    createInputField();//✔
-
-    //apply different rules depending on who guesses
-    //mainly what to show and what to hide
+    createColorButtons();
+    createInputField();
 
     if (guesser == "Player") {
-        createCode(codeToGuess);
+        codeToGuess = createCode();
         putSolutionOnField();
     }
     setUpFieldForGame();
-
-    //do all codes
-    maxPossibleCodes = calculatePossibleCodes(); //needed for the display
-    createAllPossibleCodes();
-
-    displaySettings();//✔
+    calculatePossibleCodes(); 
+    displaySettings();
 }
 
-/* Apply cholsen settings at the start of the game:
+/* Set global variable values chosen settings at the start of the game:
  * number of colors
  * number of slots
  * use of double colors in code
@@ -37,19 +69,15 @@ function startGame() {
  * */
 function applySettings() {
 
-    //* number of colors
-    colorCount = $("#idAnzFarben").val();
-    colorCount = Number(colorCount);
-
-    //* number of slots
-    positionCount = $("#idAnzStecker").val();
-    positionCount = Number(positionCount);
+    //* number of colors and slots
+    colorCount = Number($("#idAnzFarben").val());
+    positionCount = Number($("#idAnzStecker").val());
 
     //* use of double colors in code
     doubles = false;
     const cb = document.getElementById('idDoubles'); //for some reason this doesn't work when I try using jQuery
     if (cb.checked) doubles = true;
-    else if (Number(colorCount) < Number(positionCount)) {
+    else if (colorCount < positionCount) {
         alert("Because you chose less colors than positions there will be multiple use of the same colors.");
         doubles = true;
     }
@@ -62,7 +90,7 @@ function applySettings() {
         guesser = "Computer";
 }
 
-/*adds the color buttons to pick the code based on the settings
+/* creates colored buttons to pick the code
  * and adds them before the invisible <hr> with the id "addStuffHere"
  */
 function createColorButtons() {
@@ -74,45 +102,17 @@ function createColorButtons() {
     }
 }
 
-/*Adds <td>s according to slot count to the table where own code is displayed and marks current position*/
-function createInputField() {
+/* Adds <td>s according to slot count to the table to display own code
+   and marks current position */
+ function createInputField() {
     for (let i = 0; i < positionCount; i++) {
         $("#idTable").after("<td class='ownCode'></td>");
     }
     $(".ownCode")[positionInOwnCode].style.border = "4px solid white";
 }
 
-/*hides or shows areas/elements on the page based on the settings */
-function setUpFieldForGame() {
- if (guesser == "Computer") {
-        $(".plGuess").hide();
-    } else {
-        $(".cpGuess").hide();        
-        $("#idAnswer").show();
-        $("#spielfeld").show();
-    }
-    $("#settingsSet").hide();
-    $("#idCode").show();
-}
-
-
-function createCode(code) {
-    //I need an array that I can alter if doubles
-    for (let i = 0; i < colorCount; i++) {
-        usedColors[i] = arrColors[i];
-    }
-
-    let useCount = colorCount;
-    for (let i = 0; i < positionCount; i++) {
-        let rand = Math.floor(Math.random() * useCount);
-        code[i] = usedColors[rand];
-        if (!doubles) {
-            usedColors.splice(rand, 1); //discard the color just used
-            useCount--;
-        }
-    }
-}
-
+/* write the Solution in a hidden area 
+   so it can be displayed on button click */
 function putSolutionOnField() {
     let tdList = "";
     for (let i = 0; i < positionCount; i++) {
@@ -124,88 +124,19 @@ function putSolutionOnField() {
     }
 }
 
-function createAllPossibleCodes() {
-    //anzahl berechnen
-    let totalCount = 1;
-    for (let i = 0; i < positionCount; i++) {
-        totalCount *= (colorCount);
+/* hides or shows areas/elements on the page based on who does the guessing,
+ hides area to choose settings and shows area to play */
+function setUpFieldForGame() {
+ if (guesser == "Computer") {
+        $(".plGuess").hide();
+    } else {
+        $(".cpGuess").hide();        
+        $("#idAnswer").show();
+        $("#spielfeld").show();
     }
-
-    if (totalCount <= maxCodesToBruteForce) {
-        //Arrays erstellen
-        for (let i = 0; i < totalCount; i++) {
-            allPossibleCodes[i] = [];
-        }
-
-        //codes erstellen
-        let max = 1;
-
-        //for jede spalte i 
-        for (let i = 0; i < positionCount; i++) {
-            let colIndex = 0;
-            let counter = 0;
-
-            //für jeden möglichen code
-            for (let j = 0; j < totalCount; j++) {
-                //vergib die farbe
-                allPossibleCodes[j][i] = arrColors[colIndex];
-                //und zähle weiter
-                counter++;
-                //max berechnet, wie oft hintereinander die gleiche farbe verwendet wird
-                //codemäßig. 111, 112, 113 - an der 3. stelle wird jedes mal raufgezählt
-                //an der zweiten erst dann, wenn max erreicht ist
-
-                if (counter == max) {
-                    colIndex++;
-                    if (colIndex == colorCount) {
-                        colIndex = 0;
-                    }
-                    counter = 0;
-                }
-            }
-            //und für die nächste spalte ist das max dann höher
-            max *= colorCount;
-        }
-
-        if (!doubles) {
-            removeDoubles();
-        }
-    }
+    $("#settingsSet").hide();
+    $("#idCode").show();
 }
-
-function removeDoubles() {
-    let codesToDrop = [];
-    let codeCount = 0;
-    let dropCode;
-    //let doubles;
-
-    //check all possible codes if they are still possible
-    for (let j = 0; j < allPossibleCodes.length; j++) {
-        dropCode = false;
-
-        for (let i = 0; i < positionCount; i++) {
-            let currCol = allPossibleCodes[j][i];
-            for (let k = i + 1; k < positionCount; k++) {
-                if (allPossibleCodes[j][k] == currCol) {
-                    codesToDrop[codeCount] = j;
-                    dropCode = true;
-                }
-            }
-        }
-        //wenn mehrere codes den gerade aktiven ausschließen, dann überschreibt er sich halt selbst
-        if (dropCode) {
-            codeCount++;
-        }
-    }
-
-    //drop now invalid codes in reverse order, as to not interrupt the order
-    for (let i = codesToDrop.length - 1; i >= 0; i--) {
-        allPossibleCodes.splice(codesToDrop[i], 1);
-    }
-
-    $("#idPossible").text("codes possible: " + allPossibleCodes.length);
-}
-
 
 /*calculates the amount of total possible codes based on the settings
  * if it' with doubles, it's colors^slots
@@ -227,7 +158,7 @@ function calculatePossibleCodes() {
             clCt--;
         }
     }
-    return totalCount;
+    maxPossibleCodes = totalCount;
 }
 
 /*Constructs the string for displaying the settings

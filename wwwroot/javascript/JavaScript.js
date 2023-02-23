@@ -38,7 +38,7 @@ function submitCode() {
             if (goAhead) {
                 doubles = true;
 
-                createAllPossibleCodes();
+                
                 displaySettings();
             }
         }
@@ -49,9 +49,26 @@ function submitCode() {
         $("#idCode").hide();
         $("#idAnswer").show();
         $("#spielfeld").show();
-
+createAllPossibleCodes();
         cpGuesses();
     }
+}
+
+function takeGuess() {
+    if (guess == 0) createAllPossibleCodes();
+    guess++;
+    writeCodeToAllCodes();
+    createAndColorTablerow();
+    answer();
+
+    //reset the code to guess (visual and background information)
+    for (let i = 0; i < positionCount; i++) {
+        $(".ownCode")[i].style.backgroundColor = bgcl;
+        $(".ownCode")[i].style.border = "1px dotted white";
+        guessedCode[i] = "black";
+    }
+    positionInOwnCode = 0;
+    $(".ownCode")[0].style.border = "4px solid white";
 }
 
 function checkSubmittedCodeForDoubles() {
@@ -84,17 +101,11 @@ function showSolution() {
 
 function cpGuesses() {
     guess++;
-    if (guess > 1) {
-        let validCode = false;
+    do {
+        guessedCode = createCode();
+    } while (guess>1 && !checkIfCodeIsValid())
 
-        while (!validCode) {
-            createCode(guessedCode);
-            validCode = checkIfCodeIsValid();
-        }
-    }
-    else
-        createCode(guessedCode);
-
+  
     writeCodeToAllCodes();
 
     createAndColorTablerow();
@@ -111,9 +122,118 @@ function cpGuesses() {
 
 }
 
+/* Creates a random Code based on possible colors 
+ * 
+ 
+ */
+function createCode() {
+    //I need an array that I can alter if doubles
+    let newCode = [];
+    let usedColors = [];
+    let useCount = colorCount;
+
+    //fill temporary array with possible colors
+    for (let i = 0; i < colorCount; i++) {
+        usedColors[i] = arrColors[i];
+    }
+
+    for (let i = 0; i < positionCount; i++) {
+        let rand = Math.floor(Math.random() * useCount);
+        //set color in code to ranom possible color
+        newCode[i] = usedColors[rand];
+        if (!doubles) {
+            usedColors.splice(rand, 1); //discard the color just used
+            useCount--;
+        }
+    }
+    return newCode;
+}
+
+
+/* This function was created to reduce randomness in computer guessing
+ * if the total possible codes doesn't exceed 90k, 
+ * all codes are brute forced into an array  */
+function createAllPossibleCodes() {
+    if (maxPossibleCodes <= maxCodesToBruteForce) {
+        //Arrays erstellen
+        for (let i = 0; i < maxPossibleCodes; i++) {
+            allPossibleCodes[i] = [];
+        }
+
+        //codes erstellen
+        let max = 1;
+
+        //for jede spalte i 
+        for (let i = 0; i < positionCount; i++) {
+            let colIndex = 0;
+            let counter = 0;
+
+            //für jeden möglichen code
+            for (let j = 0; j < maxPossibleCodes; j++) {
+                //vergib die farbe
+                allPossibleCodes[j][i] = arrColors[colIndex];
+                //und zähle weiter
+                counter++;
+                //max berechnet, wie oft hintereinander die gleiche farbe verwendet wird
+                //codemäßig. 111, 112, 113 - an der 3. stelle wird jedes mal raufgezählt
+                //an der zweiten erst dann, wenn max erreicht ist
+
+                if (counter == max) {
+                    colIndex++;
+                    if (colIndex == colorCount) {
+                        colIndex = 0;
+                    }
+                    counter = 0;
+                }
+            }
+            //und für die nächste spalte ist das max dann höher
+            max *= colorCount;
+        }
+
+        if (!doubles) {
+            removeDoubles();
+        }
+    }
+}
+
+function removeDoubles() {
+    let codesToDrop = [];
+    let codeCount = 0;
+    let dropCode;
+    //let doubles;
+
+    //check all possible codes if they are still possible
+    for (let j = 0; j < allPossibleCodes.length; j++) {
+        dropCode = false;
+
+        for (let i = 0; i < positionCount; i++) {
+            let currCol = allPossibleCodes[j][i];
+            for (let k = i + 1; k < positionCount; k++) {
+                if (allPossibleCodes[j][k] == currCol) {
+                    codesToDrop[codeCount] = j;
+                    dropCode = true;
+                }
+            }
+        }
+        //wenn mehrere codes den gerade aktiven ausschließen, dann überschreibt er sich halt selbst
+        if (dropCode) {
+            codeCount++;
+        }
+    }
+
+    //drop now invalid codes in reverse order, as to not interrupt the order
+    for (let i = codesToDrop.length - 1; i >= 0; i--) {
+        allPossibleCodes.splice(codesToDrop[i], 1);
+    }
+
+    $("#idPossible").text("codes possible: " + allPossibleCodes.length);
+}
+
+
 function checkIfCodeIsValid() {
     let valid = true;
 
+    //if(guess>1)
     //all lines need to be checked, start with 1, cause 0 is empty
     for (let i = 1; i < allGuessedCodes.length; i++) {
 
@@ -171,21 +291,7 @@ function createAndColorTablerow() {
     }
 }
 
-function takeGuess() {
-    guess++;
-    writeCodeToAllCodes();
-    createAndColorTablerow();
-    answer();
 
-    //reset the code to guess (visual and background information)
-    for (let i = 0; i < positionCount; i++) {
-        $(".ownCode")[i].style.backgroundColor = bgcl;
-        $(".ownCode")[i].style.border = "1px dotted white";
-        guessedCode[i] = "black";
-    }
-    positionInOwnCode = 0;
-    $(".ownCode")[0].style.border = "4px solid white";
-}
 
 function giveAnswer() {
     // let result = " ";
