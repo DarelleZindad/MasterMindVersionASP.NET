@@ -1,37 +1,65 @@
-﻿<!DOCTYPE html>
+﻿
+@* layout for all pages
+    even though it's only one so far, there might be others in the future
 
+    ~~~ head ~~~
+    - metadata
+    - fonts
+    - stylesheets
+    - script: jQuery (other scripts are page specific)'
+
+    ~~~ body ~~~
+    - header
+    - section to display sttings
+    - section to display rules
+    - main content
+*@
+
+<!DOCTYPE html>
 <html>
+
+@*~~~ head ~~~*@
 <head>
+
+    @*- metadata*@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width" />
     <title>@ViewBag.Title</title>
 
+    @*- fonts*@
     <!--used fonts-->
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Dosis:wght@200&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Titillium+Web:wght@300&display=swap" rel="stylesheet">
 
+    @*- stylesheets*@
     <!--used stylesheets-->
     <link href="~/css/StyleSheet.css" rel="stylesheet" />
     <link href="~/css/GridLayout.css" rel="stylesheet" />
     <link href="~/css/Colors.css" rel="stylesheet" />
 
+    @*- script: jQuery (other scripts are page specific)'*@
     <!--jQuery-->
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-
 </head>
+
+@*~~~ body ~~~*@
 <body>
+
+    @*- header*@
     <header>
         <h1>@ViewBag.Headline</h1>
         <h2>@ViewBag.SubHeadline</h2>
     </header>
 
-    @*display chosen settings, position of the section is defined in GridLayout.css*@
+    @*- section to display sttings*@
+    @* position of the section is defined in GridLayout.css*@
     <div id="settingsShow" class="griddy">
-       @RenderSection("DisplaySettings")
+        @RenderSection("DisplaySettings")
     </div>
 
-    @*display rules, position of the section is defined in GridLayout.css*@
+    @*- section to display rules*@
+    @* position of the section is defined in GridLayout.css*@
     <section id="idIntro" class="griddy">
         @RenderSection("DisplayRules")
     </section>

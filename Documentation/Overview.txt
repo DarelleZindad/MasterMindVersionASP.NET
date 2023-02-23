@@ -6,5 +6,9 @@ Code improvement is not the main focus of this project. Most things will only be
 15.02.2023
 
 Copied in HTML code and split css GridLayout from main css
+Copied in javascript and split StartGame from main js
 21.02.2023
 
+Structured and commented HTML (_Layout.cshtml, Index.cshtml)
+Put used variables in a separate js
+22.02.2023

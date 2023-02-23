@@ -9,17 +9,18 @@
     ViewBag.SubHeadline = "Cracking the color code";
 }
 
+@* once the game starts, the chosen settings will be displayed in this area *@
 @section DisplaySettings
 {
-        <h3>Settings</h3>
+    <h3>Current Settings</h3>
 
-        <p id="idSettings">Please choose your playstyle!</p>
-        <button id="newGame" onclick="reload()">New Game</button>   
+    <p id="idSettings">Please choose your playstyle!</p>
+    <button id="newGame" onclick="reload()">New Game</button>
 }
 
 @section DisplayRules
-{   
-<h3>Rules</h3>
+{
+    <h3>Rules</h3>
     <p>
         Every guessed color that's in the code gets either an "x" or an "o", depending on the position:
         <ul>
@@ -30,112 +31,190 @@
     </p>
 }
 
+@* ========= main part =========
+    The page has 4 parts:
+    - chose settings before starting the game
+    - code input
+    - diplay of guessed codes and answers
+    - answer input
+
+    ~~~ chose settings before starting the game ~~~
+    (this area becomes invisible when the game starts)
+    - number of colors
+    - number of slots
+    - allow a color to occur more than once?
+    - who is doing the guessing: player or computer?
+
+    (the following become visible on game start)
+    ~~~ code input ~~~
+    - series of buttons to chose colors
+    - table row with rounded corners where the chosen colors are displayed
+    - button to undo a color
+    - button to submit the code
+    if the computer is guessing, this part will become invisible after submitting the code to guess
+
+    ~~~ diplay of guessed codes and answers ~~~
+    - colored rounded table rows for the submitted codes
+    - text for the answers: "x" color in correct place, "o" color in the code
+    - button to show solution
+
+    ~~~ answer input ~~~
+    if computer guesses:
+    - inputs for number of "x" and "o"
+    - button to submit answer
+    - button to let the computer do the next answer
+    - button to let the computer do all answers (autosolve)
+    if player guesses:
+    - button to let the computer take a guess
+    - button to let the computer take all guesses (autosolve)
+*@
 
 
 
+@*~~~ chose settings before starting the game ~~~*@
+<aside id="settingsSet" class="griddy">
+    <h3>Settings</h3>
+    <div class="flex">
+        <div class="stayLeft">
 
-    <aside id="settingsSet" class="griddy">
-        <!--Game settings------------------------------------->
+            @*- number of colors*@
+            <p>
+                <input id="idAnzFarben" type="number" min="2" max="25" value="8">
+                <label for="idAnzFarben">different colours</label>
+            </p>
 
-        <h3>Settings</h3>
+            @*- number of slots*@
+            <p>
+                <input id="idAnzStecker" type="number" min="2" max="20" value="5">
+                <label for="idAnzStecker">digits to guess</label>
+            </p>
+
+            @*- allow a color to occur more than once?*@
+            <p>
+                <input id="idDoubles" type="checkbox">
+                <label for="idDoubles">allow multiple use of same color</label>
+            </p>
+        </div>
+
+        @*- who is doing the guessing: player or computer?*@
+        <div class="stayLeft">
+            <p>Who does the guessing?</p>
+            <p>
+                <input id="pl" type="radio" name="whoGuesses" checked="true">
+                <label for="pl">Player</label>
+            </p>
+            <p>
+                <input id="cp" type="radio" name="whoGuesses">
+                <label for="cp">Computer</label>
+            </p>
+        </div>
+    </div>
+
+    <button onclick="startGame()">Start Game</button>
+</aside>
+
+
+
+@*~~~ code input ~~~*@
+<section id="idCode" class="griddy">
+    <div class="flexdown">
+        Click to put Color in the Code:
         <div class="flex">
-            <div class="stayLeft">
-                <p>
-                    <input id="idAnzFarben" type="number" min="2" max="25" value="8">
-                    <label for="idAnzFarben">different colours</label>
-                </p>
-                <p>
-                    <input id="idAnzStecker" type="number" min="2" max="20" value="5">
-                    <label for="idAnzStecker">digits to guess</label>
-                </p>
-                <p>
-                    <input id="idDoubles" type="checkbox">
-                    <label for="idDoubles">allow multiple use of same color</label>
-                </p>
-            </div>
 
-            <div class="stayLeft">
-                <p>Who does the guessing?</p>
-                <p>
-                    <input id="pl" type="radio" name="whoGuesses" checked="true">
-                    <label for="pl">Player</label>
-                </p>
-                <p>
-                    <input id="cp" type="radio" name="whoGuesses">
-                    <label for="cp">Computer</label>
-                </p>
-            </div>
-        </div>
-        <button onclick="startGame()">Start Game</button>
-    </aside>
-
-    <section id="idCode" class="griddy">
-        <div class="flexdown">
-            Click to put Color in the Code:
-            <div class="flex">
-
-                <!--This is where the color buttons will be added-->
-                <!--the invisble guideline-->
-                <hr id="addStuffHere">
-                <!--this is where the code will be entered-->
-            </div>
-            <table>
-                <tr>
-                    <td id="idTable" class="tabletext">Your code: </td>
-                </tr>
-            </table>
-
-            <div id=idCreateCode>
-                <button onclick="undoColor()">Undo a color</button>
-                <button class="cpGuess" id="btnSubmitCode" onclick="submitCode()">submitCode</button>
-                <button class="plGuess" id="btnGuess" onclick="takeGuess()">takeGuess</button>
-            </div>
-        </div>
-    </section>
-
-    <section id="spielfeld" class="griddy">
-        <!--and here the results will be shown-->
-        <hr id="idGuessedCode">
-        <p id="idDoubleGuesses"></p>
-        <p id="idImpossible"></p>
-        <p id="idPossible"></p>
-        <button id="idBtnSolShow" class="plGuess" onclick="showSolution()">show Solution</button>
-    </section>
-
-    <aside id="idAnswer" class="griddy">
-        <p></p>
-        <div class="cpGuess">
-            <p> Give an answer:</p>
-            <p>
-                <label for="idX">
-                    x:
-                </label>
-                <input id=idX type="number" value="0">
-            </p>
-            <p>
-                <label for="idO">
-                    o:
-                </label>
-                <input id=idO type="number" value="0">
-            </p>
-
-            <button onclick="giveAnswer()">answer</button>
+            @*- series of buttons to chose colors*@
+            <!--This is where the color buttons will be added-->
+            <!--the invisble guideline-->
+            <hr id="addStuffHere">
         </div>
 
-        <button class="cpGuess" onclick="answer()">autoanswer</button>
-        <button class="cpGuess" onclick="cpAutosolve()">autosolve</button>
-        <button class="plGuess" onclick="autoguess()">autoguess</button>
-        <button class="plGuess" onclick="plAutosolve()">autosolve</button>
-        <p></p>
-    </aside>
+        @*- table row with rounded corners where the chosen colors are displayed*@
+        <!--this is where the code will be entered-->
+        <table>
+            <tr>
+                <td id="idTable" class="tabletext">Your code: </td>
+            </tr>
+        </table>
 
-    <script src="~/javascript/JavaScript.js"></script>
-    <script>
-        "use strict";
+        <div id=idCreateCode>
+            @*- button to undo a color*@
+            <button onclick="undoColor()">Undo a color</button>
 
-        //on loading the page, hide stuff we don't need yet
-        $("#idCode").hide();
-        $("#spielfeld").hide();
-        $("#idAnswer").hide();
+            @*- button to submit the code*@
+            <button class="cpGuess" id="btnSubmitCode" onclick="submitCode()">submitCode</button>
+            <button class="plGuess" id="btnGuess" onclick="takeGuess()">takeGuess</button>
+        </div>
+    </div>
+</section>
 
-    </script>
+
+@*~~~ diplay of guessed codes and answers ~~~*@
+<section id="spielfeld" class="griddy">
+    @*- colored rounded table rows for the submitted codes*@
+    @*- text for the answers: "x" color in correct place, "o" color in the code*@
+    <!--and here the results will be shown-->
+    <hr id="idGuessedCode">
+
+    <p id="idDoubleGuesses"></p>
+    <p id="idImpossible"></p>
+    <p id="idPossible"></p>
+
+    @*- button to show solution*@
+    <button id="idBtnSolShow" class="plGuess" onclick="showSolution()">show Solution</button>
+</section>
+
+@*~~~ answer input ~~~*@
+<aside id="idAnswer" class="griddy">
+    <p></p>
+
+    @*if computer guesses:*@
+    <div class="cpGuess">
+        <p> Give an answer:</p>
+
+        @*- inputs for number of "x" and "o"*@
+        <p>
+            <label for="idX">
+                x:
+            </label>
+            <input id=idX type="number" value="0">
+        </p>
+        <p>
+            <label for="idO">
+                o:
+            </label>
+            <input id=idO type="number" value="0">
+        </p>
+
+        @*- button to submit answer*@
+        <button onclick="giveAnswer()">answer</button>
+    </div>
+
+    @*- button to let the computer do the next answer*@
+    <button class="cpGuess" onclick="answer()">autoanswer</button>
+
+    @*- button to let the computer do all answers (autosolve)*@
+    <button class="cpGuess" onclick="cpAutosolve()">autosolve</button>
+
+
+    @*if player guesses:*@
+
+    @*- button to let the computer take a guess*@
+    <button class="plGuess" onclick="autoguess()">autoguess</button>
+
+    @*- button to let the computer take all guesses (autosolve)*@
+    <button class="plGuess" onclick="plAutosolve()">autosolve</button>
+    <p></p>
+</aside>
+
+
+<script src="~/javascript/GlobalVariables.js"></script>
+<script src="~/javascript/StartGame.js"></script>
+<script src="~/javascript/JavaScript.js"></script>
+<script>
+    "use strict";
+
+    //on loading the page, hide stuff we don't need yet
+    $("#idCode").hide();
+    $("#spielfeld").hide();
+    $("#idAnswer").hide();
+
+</script>
