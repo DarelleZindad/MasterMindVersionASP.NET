@@ -1,6 +1,9 @@
 ﻿"use strict";
 
-
+/**UI
+ * 
+ * @param {any} int
+ */
 function addColorToCode(int) {
     //sets backround color and moves the "active" position to the next position
     $(".ownCode")[positionInOwnCode].style.border = "1px dotted white";
@@ -15,6 +18,8 @@ function addColorToCode(int) {
         $(".ownCode")[positionInOwnCode].style.border = "4px solid white";
 }
 
+/*UI
+ * */
 function undoColor() {
     //it's the reverse of addColorToCode(), obviously
     let bgcl = $("#idCode").css("background-color");
@@ -27,6 +32,8 @@ function undoColor() {
     }
 }
 
+/*Player starts game
+ * */
 function submitCode() {
     //if the user didn't chose doubles but put doubles in, 
     //it will cause problems. so:
@@ -54,22 +61,7 @@ createAllPossibleCodes();
     }
 }
 
-function takeGuess() {
-    if (guess == 0) createAllPossibleCodes();
-    guess++;
-    writeCodeToAllCodes();
-    createAndColorTablerow();
-    answer();
 
-    //reset the code to guess (visual and background information)
-    for (let i = 0; i < positionCount; i++) {
-        $(".ownCode")[i].style.backgroundColor = bgcl;
-        $(".ownCode")[i].style.border = "1px dotted white";
-        guessedCode[i] = "black";
-    }
-    positionInOwnCode = 0;
-    $(".ownCode")[0].style.border = "4px solid white";
-}
 
 function checkSubmittedCodeForDoubles() {
 
@@ -86,6 +78,8 @@ function checkSubmittedCodeForDoubles() {
     return true;
 }
 
+/**UI
+ * */
 function showSolution() {
     if ($("#idBtnSolShow").text() == "show Solution") {
         $("#idShowCode").show();
@@ -97,28 +91,6 @@ function showSolution() {
 
 }
 
-function cpGuesses() {
-    guess++;
-    do {
-        guessedCode = createCode();
-    } while (guess>1 && !checkIfCodeIsValid())
-
-  
-    writeCodeToAllCodes();
-
-    createAndColorTablerow();
-    if (autosolve) {
-        answer();
-        if (guesser == "Player" && autosolve)
-            //autosolve check is neccessary in case the code was cracked
-            //else the computer will try random codes for all eternity
-            cpGuesses();
-    }
-
-    //  $("#idDoubleGuesses").text(doubleguesses + " doubleguesses avoided");
-    //  $("#idImpossible").text(impossibleCodes + " impossible codes avoided");
-
-}
 
 /* Creates a random Code based on possible colors 
  * 
@@ -287,6 +259,39 @@ function createAndColorTablerow() {
     }
 }
 
+function cpGuesses() {
+    guess++;
+    do {
+        guessedCode = createCode();
+    } while (guess>1 && !checkIfCodeIsValid())
+
+  
+    writeCodeToAllCodes();
+
+    createAndColorTablerow();
+
+    //  $("#idDoubleGuesses").text(doubleguesses + " doubleguesses avoided");
+    //  $("#idImpossible").text(impossibleCodes + " impossible codes avoided");
+
+}
+
+function takeGuess() {
+    if (guess == 0) createAllPossibleCodes();
+    guess++;
+    writeCodeToAllCodes();
+    createAndColorTablerow();
+    answer();
+
+    //reset the code to guess (visual and background information)
+    for (let i = 0; i < positionCount; i++) {
+        $(".ownCode")[i].style.backgroundColor = bgcl;
+        $(".ownCode")[i].style.border = "1px dotted white";
+        guessedCode[i] = "black";
+    }
+    positionInOwnCode = 0;
+    $(".ownCode")[0].style.border = "4px solid white";
+}
+
 function giveAnswer() {
     // let result = " ";
     let xCount = Number($("#idX").val());
@@ -308,27 +313,38 @@ function giveAnswer() {
 function answer() {
     calculateAnswer(guessedCode, codeToGuess);
     writeAnswer();
-    analyze();
-    if (guesser == "Computer" && red != positionCount) {
-        cpGuesses();
+    if (!codeFound && guesser == "Computer")
+        cpGuesses();    
+    }
+    
+function autosolve() {
+while (!codeFound) {
+    if (guesser == "Player")  cpGuesses();       
+     answer();
     }
 }
 
-function cpAutosolve() {
-    autosolve = true;
-    answer();
+function endGame() {
+ let answer = guesser == "Player" ? "You cracked the code!" : "Computer cracked the code!";
+        $("#idGuessedCode").after(answer);
+        $("#idCode").hide();
+        $("#idAnswer").hide();
+        $("#idBtnSolShow").hide();
+        $("#idShowCode").show();
 }
 
-function plAutosolve() {
-    autosolve = true;
-    cpGuesses();
-}
 
+/*Player
+ * one guess only made by PC
+ * */
 function autoguess() {
     cpGuesses();
     answer();
 }
 
+/* Writes answer to screen 
+ * and into the array where already guessed codes are saved
+ * */
 function writeAnswer() {
     //write answer on screen
     let result = " ";
@@ -337,31 +353,23 @@ function writeAnswer() {
 
     $(".codeToAnswer")[0].append(result);
 
+    if (red == positionCount) {
+        codeFound = true;
+        endGame();
+    }
+    else {
     //write answer to allCodes
     let posRed = positionCount;         //index der farben geht von 0 bis pos-1
     let posWhite = positionCount + 1;
     allGuessedCodes[guess][posRed] = red;
     allGuessedCodes[guess][posWhite] = white;
-}
 
-function analyze() {
-    //if all are red... well, then the code is cracked
-    if (red == positionCount) {
-        if (guesser == "Player")
-            $("#idGuessedCode").after("You cracked the code!");
-        else
-            $("#idGuessedCode").after("Computer cracked the code!");
-        $("#idCode").hide();
-        $("#idAnswer").hide();
-        $("#idBtnSolShow").hide();
-        $("#idShowCode").show();
-        autosolve = false;
-    }
-    else {
         removeImpossibleCodes();
     }
 }
 
+/*PC 
+ */
 function calculateAnswer(codeToCheck, codeToCompareWith) {
     red = 0;        //correct place
     white = 0;      //correct color
@@ -400,11 +408,13 @@ function calculateAnswer(codeToCheck, codeToCompareWith) {
     white -= red;
 }
 
-
+/* PC
+ * checks list of all possible codes and compares them with all received answers
+ * I wonder why I would go through all codes though instead of just calling the function on getting a new answer*/
 function removeImpossibleCodes() {
 
     //the code just asked is obviously no longer valid, elae it would be a win
-    allPossibleCodes.splice(rand, 1);
+    //allPossibleCodes.splice(rand, 1);
 
     let codesToDrop = [];
     let codeCount = 0;

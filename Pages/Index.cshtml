@@ -59,14 +59,13 @@
     - button to show solution
 
     ~~~ answer input ~~~
+    - button to let the computer solve the game (autosolve)
     if computer guesses:
     - inputs for number of "x" and "o"
     - button to submit answer
     - button to let the computer do the next answer
-    - button to let the computer do all answers (autosolve)
     if player guesses:
-    - button to let the computer take a guess
-    - button to let the computer take all guesses (autosolve)
+    - button to let the computer take a guess    
 *@
 
 
@@ -191,17 +190,14 @@
     @*- button to let the computer do the next answer*@
     <button class="cpGuess" onclick="answer()">autoanswer</button>
 
-    @*- button to let the computer do all answers (autosolve)*@
-    <button class="cpGuess" onclick="cpAutosolve()">autosolve</button>
-
-
     @*if player guesses:*@
-
     @*- button to let the computer take a guess*@
     <button class="plGuess" onclick="autoguess()">autoguess</button>
-
-    @*- button to let the computer take all guesses (autosolve)*@
-    <button class="plGuess" onclick="plAutosolve()">autosolve</button>
+   
+    @*in both cases:*@
+    @*- button to let the computer solve the game (autosolve)*@
+    <button onclick="autosolve()">autosolve</button>
+    
     <p></p>
 </aside>
 
