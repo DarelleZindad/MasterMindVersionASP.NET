@@ -1,18 +1,27 @@
 ﻿"use strict";
 
-/**UI
- * 
- * @param {any} int
+ //* create code
+ //* check for doubles
+// * check for valid
+// * guess
+ //* answer
+// * end game
+ //UI
+
+//========== player input code =====================
+
+/* When clicking on a color button, the color is added to the code in UI and array
+ * Parameter: The button sends the int that is the index of the colors[] 
  */
 function addColorToCode(int) {
+
+    let usedCode = guesser == "Player" ? guessedCode : codeToGuess;
+    usedCode[positionInOwnCode] = arrColors[int];
+
     //sets backround color and moves the "active" position to the next position
     $(".ownCode")[positionInOwnCode].style.border = "1px dotted white";
     $(".ownCode")[positionInOwnCode].style.backgroundColor = arrColors[int];
-    if (guesser == "Player")
-        guessedCode[positionInOwnCode] = arrColors[int];
-    else
-        codeToGuess[positionInOwnCode] = arrColors[int];
-    // $(".pickColor")[positionInOwnCode].hide();
+
     positionInOwnCode++;
     if (positionInOwnCode < positionCount) //we dont want the script to break due to out of bounds stuff
         $(".ownCode")[positionInOwnCode].style.border = "4px solid white";
@@ -23,8 +32,10 @@ function addColorToCode(int) {
 function undoColor() {
     //it's the reverse of addColorToCode(), obviously
     let bgcl = $("#idCode").css("background-color");
+    let usedCode = guesser == "Player" ? guessedCode : codeToGuess;
     if (positionInOwnCode > 0) {
         positionInOwnCode--;
+        usedCode.splice(positionInOwnCode, 1);
         if (positionInOwnCode < positionCount - 1)
             $(".ownCode")[positionInOwnCode + 1].style.border = "1px dotted white";
         $(".ownCode")[positionInOwnCode].style.backgroundColor = bgcl;
@@ -32,51 +43,17 @@ function undoColor() {
     }
 }
 
-/*Player starts game
- * */
-function submitCode() {
-    //if the user didn't chose doubles but put doubles in, 
-    //it will cause problems. so:
-    let goAhead;
-    if (!doubles) {
-        goAhead = checkSubmittedCodeForDoubles();
-        if (!goAhead) {
-            goAhead = confirm("Your code includes doubles. Do you want that?");
-            if (goAhead) {
-                doubles = true;
-
-                
-                displaySettings();
-            }
-        }
-    }
-    if (goAhead) {
-        putSolutionOnField();
-        showSolution();
-        $("#idCode").hide();
-        $("#idAnswer").show();
-        $("#spielfeld").show();
-createAllPossibleCodes();
-        cpGuesses();
-    }
-}
-
-
-
-function checkSubmittedCodeForDoubles() {
-
+function resetCodeToGuess() {
+ //reset the code to guess (visual and background information)
     for (let i = 0; i < positionCount; i++) {
-        let currCol = codeToGuess[i];
-        for (let j = i + 1; j < positionCount; j++) {
-            if (j < positionCount - 1) {
-                if (codeToGuess[j] == currCol) {
-                    return false;
-                }
-            }
-        }
+        $(".ownCode")[i].style.backgroundColor = bgcl;
+        $(".ownCode")[i].style.border = "1px dotted white";
+        guessedCode[i] = "black";
     }
-    return true;
+    positionInOwnCode = 0;
+    $(".ownCode")[0].style.border = "4px solid white";
 }
+
 
 /**UI
  * */
@@ -88,10 +65,58 @@ function showSolution() {
         $("#idShowCode").hide();
         $("#idBtnSolShow").text("show Solution");
     }
+}
 
+//=======================================================
+
+
+//============ check user input ==========================
+
+
+function giveAnswer() {
+    // let result = " ";
+    let xCount = Number($("#idX").val());
+    let oCount = Number($("#idO").val());
+
+    //check if the user answered correctly
+    calculateAnswer(guessedCode, codeToGuess);
+    if (red != xCount || white != oCount)
+        alert("Plz check your answer. There seems to be a mistake.");
+    else {
+        writeAnswer();
+        if (!codeFound) {
+            cpGuesses();        
+            $("#idX").val(0);
+            $("#idO").val(0);
+        }
+    }
+}
+
+//===========================================================
+
+//================= player actions ========================
+/*when player does his guess, 
+ * if it's turn 1, the pc will create all possible codes 
+ (this is to update the remaining possibilities after each guess)
+ *add 1 to number of guesses
+ * write the guessed code to the array where all guessed codes are stored
+ * update UI
+ * calculate and add answer
+ * reset UI and codeToGuess
+ */
+function takeGuess() {
+    if (guess == 0) createAllPossibleCodes();
+    guess++;
+    writeCodeToAllCodes();
+    createAndColorTablerow();
+    answer();
+    resetCodeToGuess();
+   
 }
 
 
+
+//===========================================================
 /* Creates a random Code based on possible colors 
  * 
  
@@ -123,8 +148,15 @@ function createCode() {
  * if the total possible codes doesn't exceed 90k, 
  * all codes are brute forced into an array  */
 function createAllPossibleCodes() {
-    if (maxPossibleCodes <= maxCodesToBruteForce) {
-        //Arrays erstellen
+    if (maxPossibleCodes <= maxCodesToBruteForce) {        
+        bruteForceAllCodes();
+        if (!doubles)
+            removeDoubles();
+    }
+}
+//1 use: createAllPossibleCodes
+function bruteForceAllCodes() {
+//Arrays erstellen
         for (let i = 0; i < maxPossibleCodes; i++) {
             allPossibleCodes[i] = [];
         }
@@ -158,13 +190,8 @@ function createAllPossibleCodes() {
             //und für die nächste spalte ist das max dann höher
             max *= colorCount;
         }
-
-        if (!doubles) {
-            removeDoubles();
-        }
-    }
 }
-
+//1 use: createAllPossibleCodes
 function removeDoubles() {
     let codesToDrop = [];
     let codeCount = 0;
@@ -197,6 +224,7 @@ function removeDoubles() {
 
     $("#idPossible").text("codes possible: " + allPossibleCodes.length);
 }
+
 
 function checkIfCodeIsValid() {
     let valid = true;
@@ -275,40 +303,9 @@ function cpGuesses() {
 
 }
 
-function takeGuess() {
-    if (guess == 0) createAllPossibleCodes();
-    guess++;
-    writeCodeToAllCodes();
-    createAndColorTablerow();
-    answer();
 
-    //reset the code to guess (visual and background information)
-    for (let i = 0; i < positionCount; i++) {
-        $(".ownCode")[i].style.backgroundColor = bgcl;
-        $(".ownCode")[i].style.border = "1px dotted white";
-        guessedCode[i] = "black";
-    }
-    positionInOwnCode = 0;
-    $(".ownCode")[0].style.border = "4px solid white";
-}
 
-function giveAnswer() {
-    // let result = " ";
-    let xCount = Number($("#idX").val());
-    let oCount = Number($("#idO").val());
 
-    //check if the user answered correctly
-    calculateAnswer(guessedCode, codeToGuess);
-    if (red != xCount || white != oCount)
-        alert("Plz check your answer. There seems to be a mistake.");
-    else {
-        writeAnswer();
-
-        if (xCount != positionCount) {
-            cpGuesses();
-        }
-    }
-}
 
 function answer() {
     calculateAnswer(guessedCode, codeToGuess);

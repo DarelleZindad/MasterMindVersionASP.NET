@@ -6,6 +6,8 @@ function reload() {
     location.reload();
 }
 
+//#region startGame
+//introduction
 /* On starting the game:
  (clicking button "Start Game" on the "set settings" part of the page)
 
@@ -52,7 +54,7 @@ and set it as value for global variable codeToGuess
 
 */
 
-
+//main function
 function startGame() {
     applySettings(); 
 
@@ -68,6 +70,7 @@ function startGame() {
     displaySettings();
 }
 
+//sub functions
 /* Set global variable values chosen settings at the start of the game:
  * number of colors
  * number of slots
@@ -180,9 +183,86 @@ function displaySettings() {
     document.getElementById("idSettings").innerHTML = settings;
 }
 
+//#endregion
+
+//#region PlayerCodeBeforeFirstTurn 
+
+//introduction
+/* If the computer does the guessing, the player submits a code to be guessed 
+   before the game can really start
+   this happens after startGame(), so everything else is set already
+
+~~~ checkIfUserCodeIsValid ~~~
+returns boolean
+ * check if doubles are allowed
+ * if not, check if user put in doubles (codeHasDoubleColors)
+ * if yes, ask whether to proceed with doubles
+ * if yes, update settings
+ * return if game can proceed or not
+ 
+~~~ codeHasDoubleColors ~~~
+returns boolean
+ * loop through the code and see if the current color is used in a different place
+  
+~~~ startGameForReal ~~~
+once a valid codeToGuess is entered, the game can start
+ * update UI (show/hide areas)
+ * initiate game by letting the computer do the first guess
+ */
 
 
+//main function
+function submitCode() {   
+    if (checkIfUserCodeIsValid())
+        startGameForReal();
+}
 
+//sub functions
+/* == returns boolean ==
+ * check if doubles are allowed
+ * if not, check if user put in doubles (codeHasDoubleColors)
+ * if yes, ask whether to proceed with doubles
+ * if yes, update settings
+ * return if game can proceed or not
+ */
+function checkIfUserCodeIsValid() {
+let goAhead = true;
+if (!doubles && codeHasDoubleColors()) {
+        goAhead = confirm("Your code includes doubles. Do you want that?");
+        if (goAhead) {
+            doubles = true;
+            displaySettings();
+        }
+    }
+    return goAhead;
+}
 
+/* == returns boolean ==
+ * loop through the code and see if the current color is used in a different place
+  */
+function codeHasDoubleColors() {
+    //for each color in the code
+    for (let i = 0; i < positionCount; i++) {
+        let currCol = codeToGuess[i];
+        //compare the current color to all colors after the current color
+        for (let j = i + 1; j < positionCount; j++)
+            if (codeToGuess[j] == currCol)
+                return true;
+    }
+    return false;
+}
 
+/* once a valid codeToGuess is entered, the game can start:
+ * update UI (show/hide areas)
+ * initiate game by letting the computer do the first guess*/
+function startGameForReal() {
+ putSolutionOnField();
+        showSolution();
+        $("#idCode").hide();
+        $("#idAnswer").show();
+        $("#spielfeld").show();
+        createAllPossibleCodes();
+        cpGuesses();
+}
 
+//#endregion
