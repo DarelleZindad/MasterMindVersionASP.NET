@@ -1,14 +1,12 @@
-﻿This project is an update of an already existing MasterMind that was done with HTML, CSS, JavaScript, JQuery.
+﻿This project is an update of an already existing MasterMind that was done with 
+HTML, CSS, JavaScript, JQuery.
 
-The original was not well structured nor commented. In this version I try to improve structure and readability while also getting better used to ASP.NET
+The original was not well structured nor commented. 
+In this version I try to improve structure and readability while also getting better used to ASP.NET
 
 Code improvement is not the main focus of this project. Most things will only be copied in.
 15.02.2023
 
-Copied in HTML code and split css GridLayout from main css
-Copied in javascript and split StartGame from main js
-21.02.2023
-
-Structured and commented HTML (_Layout.cshtml, Index.cshtml)
-Put used variables in a separate js
-22.02.2023
+Update 26.02.2023
+The code was so tangled and at some points so inefficient that code improvement was inevitable 
+in some places

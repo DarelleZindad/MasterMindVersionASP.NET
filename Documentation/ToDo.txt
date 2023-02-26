@@ -1,7 +1,7 @@
-﻿15022023
-- css is copied, needs to be structured
-- html and js are not copied yet. might want to copy stuff bitwise
-- make a real plan
+﻿26.02.2023 JS_Part2
 
+- sort and split Stylesheet into several files
+- structure and comment GlobalVariables
+- finish commenting in PlayGame
 
-
+- check why allPossibleCodes returns wrong numbers

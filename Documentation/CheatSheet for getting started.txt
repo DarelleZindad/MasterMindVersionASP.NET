@@ -1,0 +1,48 @@
+﻿=== Setup ===
+From several sources on the web I came to the following procedure to make an "empty" ASP.NET into something that will work as I want it to work:
+
+- Create new Project (ASP.NET Core leer)
+- Add folder wwwroot to project
+- Add folder css to wwwroot
+- Create css
+- Add folder pages to project
+- Add folder Shared to Pages
+- Add new razor-layout document (_Layout.cshtml) to shared
+- Add stylesheet path to _Layout (<link rel="stylesheet" href="~/css/style.css" />) 
+// ~ is wwwroot by default
+// to change the root, go to CreateHostBuilder in Program.cs and add .UseWebRoot("sth"); to webBuilder.UseStartup<Startup>();
+
+- Put the desired html-structure in the Layout. 
+- Add @RenderBody() where the individual page content shall be put in
+- Add the _ViewStart.cshtml page with the following content:
+@{
+    Layout = "_Layout";
+}
+(can be found by searching razor)
+- In startup, change endpoints from
+endpoints.MapGet("/", async context =>
+                {
+                    await context.Response.WriteAsync("Hello World!");
+                });
+to
+endpoints.MapRazorPages();
+
+- Also add app.UseStaticFiles(); in method Configure
+- Add services.AddRazorPages(); to the method 
+  public void ConfigureServices(IServiceCollection services)
+- Add Index.cshtml to Pages folder and put the specific web content that’s not yet in your layout (after the initial lines with @ , not inside the {}!)
+         
+
+
+
+=== Adding structure ===
+In Layout, the structure for all pages is set. ViewBag contains the variables that differ. 
+Viewbag just takes whatever variable name you assign and checks if there is a value for it:
+Viewbag.Title, Viewbag.Headline, Viewbag.AnythingRidiculous
+
+In your page you need to give values to these, else they can't be displayed:
+Viewbag.Title = "MyTitle";
+Viewbag.AnythingRidiculous = "Whatever you assign to it";
+
+
+
