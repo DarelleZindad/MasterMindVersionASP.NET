@@ -19,7 +19,8 @@ function reload() {
  * guesser:         "Player" || "Computer"
  
 ~~~ createColorButtons ~~~
-* creates colored buttons to pick the code
+* creates colored buttons to pick the code 
+  (including the function addColorToCode(int) and the according number)
   and adds them before the invisible <hr> with the id "addStuffHere"
 
 ~~~ createInputField ~~~
@@ -28,12 +29,7 @@ function reload() {
 
 === if player is guessing, code is created and put on field here, else it's done later ===
 ~~~ codeToGuess = createCode() ~~~
-call method from 
-!!!
-!!!
-(whatever file will be called in the end) to generate a random code
-!!!
-!!!
+call method from PlayGame.js to generate a random code
 and set it as value for global variable codeToGuess
 
 ~~~ putSolutionOnField ~~~
@@ -101,6 +97,7 @@ function applySettings() {
 }
 
 /* creates colored buttons to pick the code
+  (including the function addColorToCode(int) and the according number)
  * and adds them before the invisible <hr> with the id "addStuffHere"
  */
 function createColorButtons() {

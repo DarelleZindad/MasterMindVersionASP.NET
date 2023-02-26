@@ -1,17 +1,142 @@
 ﻿"use strict";
 
- //* create code
- //* check for doubles
-// * check for valid
-// * guess
- //* answer
-// * end game
- //UI
 
-//========== player input code =====================
 
-/* When clicking on a color button, the color is added to the code in UI and array
- * Parameter: The button sends the int that is the index of the colors[] 
+/* 
+
+
+////#region take guess
+
+
+////player only
+
+///*when player does his guess, 
+// * if it's turn 1, the pc will create all possible codes 
+// (this is to update the remaining possibilities after each guess)
+// *add 1 to number of guesses
+// * write the guessed code to the array where all guessed codes are stored
+// * update UI
+// * calculate and add answer
+// * reset UI and codeToGuess
+    // *
+        ~~~ takeGuess ~~~
+//function takeGuess() {}
+
+    ////pc only
+        ~~~ cpGuesses ~~~
+//function cpGuesses() {}
+
+    ///* Creates a random Code based on possible colors  *
+        ~~~ createCode ~~~
+    //function createCode() { return newCode;}
+        ~~~ checkIfCodeIsValid ~~~
+//function checkIfCodeIsValid() {    return valid;}
+
+    ////both
+        ~~~ writeCodeToAllCodes ~~~
+    //function writeCodeToAllCodes() {}
+        ~~~ createAndColorTablerow ~~~
+//function createAndColorTablerow() {}
+////#endregion
+
+////#region answer
+
+        ~~~ giveAnswer ~~~
+//function giveAnswer() {
+//    //check if the user answered correctly
+//        writeAnswer();
+//        if (!codeFound) {
+//            cpGuesses();   
+//        }
+//    }
+
+
+        ~~~ answer ~~~
+//function answer() {
+//    calculateAnswer(guessedCode, codeToGuess);
+//    writeAnswer();
+//    if (!codeFound && guesser == "Computer")
+//        cpGuesses();    
+//    }
+    
+
+///*PC 
+    // *
+        ~~~ calculateAnswer ~~~
+//function calculateAnswer(codeToCheck, codeToCompareWith) {}
+
+///* Writes answer to screen 
+// * and into the array where already guessed codes are saved
+    // * *
+        ~~~ writeAnswer ~~~
+//function writeAnswer() {}
+
+
+
+///* PC
+// * checks list of all possible codes and compares them with all received answers
+    // * I wonder why I would go through all codes though instead of just calling the function on getting a new answer
+        ~~~ removeImpossibleCodes ~~~
+//function removeImpossibleCodes() {}
+////#endregion
+
+
+////#region autoplay
+
+///*Player
+// * one guess only made by PC
+    
+        ~~~ autoguess ~~~
+    //function autoguess() {}
+        ~~~ autosolve ~~~
+//function autosolve() {}
+////#endregion
+
+    ////#region end game
+        ~~~ endGame ~~~
+//function endGame() {}
+//
+            */
+
+
+
+//#region input code
+//introduction
+/*  ~~~ code input ~~~
+    - series of buttons to choose colors
+    - table row with rounded corners where the chosen colors are displayed
+    - button to undo a color
+    - button to submit the code
+
+~~~ addColorToCode(int) ~~~
+is called when clicking a color button
+Parameter: The button sends the int that is the according index of arrColors[]
+ * add color in UI
+ * add color to code Array
+ * update vaiable positionInOwnCode
+
+~~~ undoColor ~~~
+ * remove color in UI
+ * remove color to code Array
+ * update vaiable positionInOwnCode
+
+~~~ resetCodeToGuess ~~~
+called at the end of takeGuess(), so the player can enter a new code
+ * reset code in UI
+ * reset code Array
+ * reset vaiable positionInOwnCode
+
+~~~ showSolution ~~~
+show/hide tablerow with solution that was created in startGame()
+depending on the text on the button: "Show Solution"/"Hide Solution"
+ */
+
+//functions
+/* is called when clicking a color button
+Parameter: The button sends the int that is the according index of arrColors[]
+ * add color in UI
+ * add color to code Array
+ * update vaiable positionInOwnCode
  */
 function addColorToCode(int) {
 
@@ -27,8 +152,9 @@ function addColorToCode(int) {
         $(".ownCode")[positionInOwnCode].style.border = "4px solid white";
 }
 
-/*UI
- * */
+/* remove color in UI
+ * remove color to code Array
+ * update vaiable positionInOwnCode*/
 function undoColor() {
     //it's the reverse of addColorToCode(), obviously
     let bgcl = $("#idCode").css("background-color");
@@ -43,6 +169,11 @@ function undoColor() {
     }
 }
 
+/* called at the end of takeGuess(), so the player can enter a new code
+ * reset code in UI
+ * reset code Array
+ * reset vaiable positionInOwnCode
+ */
 function resetCodeToGuess() {
  //reset the code to guess (visual and background information)
     for (let i = 0; i < positionCount; i++) {
@@ -54,9 +185,8 @@ function resetCodeToGuess() {
     $(".ownCode")[0].style.border = "4px solid white";
 }
 
-
-/**UI
- * */
+/* show/hide tablerow with solution that was created in startGame()
+depending on the text on the button: "Show Solution"/"Hide Solution"*/
 function showSolution() {
     if ($("#idBtnSolShow").text() == "show Solution") {
         $("#idShowCode").show();
@@ -67,131 +197,73 @@ function showSolution() {
     }
 }
 
-//=======================================================
+//#endregion
 
+//#region preparation
+//introduction
+/* Because I haven't (yet) put in an algorithm that can analyze the answers,
+I first let the computer create a random code when guessing.
+To reduce the randomness, I decided to bruteforce all possible codes
+and throw out all that are no longer possible after getting an answer.
+This is also used to tell the player how many possibilities are left when the player is guessing.
+It doesn't work correctly though and needs to be checked
 
-//============ check user input ==========================
+~~~createAllPossibleCodes ~~~
+ * if the total possible codes doesn't exceed 90k:
+~~~bruteForceAllCodes ~~~
+ * all codes are brute forced into an array
+~~~removeDoubles ~~~
+ * if doubles are not allowed, all codes with doubles are removed
+*/
 
-
-function giveAnswer() {
-    // let result = " ";
-    let xCount = Number($("#idX").val());
-    let oCount = Number($("#idO").val());
-
-    //check if the user answered correctly
-    calculateAnswer(guessedCode, codeToGuess);
-    if (red != xCount || white != oCount)
-        alert("Plz check your answer. There seems to be a mistake.");
-    else {
-        writeAnswer();
-        if (!codeFound) {
-            cpGuesses();        
-            $("#idX").val(0);
-            $("#idO").val(0);
-        }
-    }
-}
-
-//===========================================================
-
-//================= player actions ========================
-/*when player does his guess, 
- * if it's turn 1, the pc will create all possible codes 
- (this is to update the remaining possibilities after each guess)
- *add 1 to number of guesses
- * write the guessed code to the array where all guessed codes are stored
- * update UI
- * calculate and add answer
- * reset UI and codeToGuess
- */
-function takeGuess() {
-    if (guess == 0) createAllPossibleCodes();
-    guess++;
-    writeCodeToAllCodes();
-    createAndColorTablerow();
-    answer();
-    resetCodeToGuess();
-   
-}
-
-
-
-//===========================================================
-/* Creates a random Code based on possible colors 
- * 
- 
- */
-function createCode() {
-    //I need an array that I can alter if doubles
-    let newCode = [];
-    let usedColors = [];
-    let useCount = colorCount;
-
-    //fill temporary array with possible colors
-    for (let i = 0; i < colorCount; i++) {
-        usedColors[i] = arrColors[i];
-    }
-
-    for (let i = 0; i < positionCount; i++) {
-        let rand = Math.floor(Math.random() * useCount);
-        //set color in code to ranom possible color
-        newCode[i] = usedColors[rand];
-        if (!doubles) {
-            usedColors.splice(rand, 1); //discard the color just used
-            useCount--;
-        }
-    }
-    return newCode;
-}
-
-/* This function was created to reduce randomness in computer guessing
- * if the total possible codes doesn't exceed 90k, 
- * all codes are brute forced into an array  */
+/* if the total possible codes doesn't exceed 90k */
 function createAllPossibleCodes() {
-    if (maxPossibleCodes <= maxCodesToBruteForce) {        
+    if (maxPossibleCodes <= maxCodesToBruteForce) {
         bruteForceAllCodes();
         if (!doubles)
             removeDoubles();
     }
 }
-//1 use: createAllPossibleCodes
+
+/* all codes are brute forced into an array*/
 function bruteForceAllCodes() {
-//Arrays erstellen
-        for (let i = 0; i < maxPossibleCodes; i++) {
-            allPossibleCodes[i] = [];
-        }
+    //Arrays erstellen
+    for (let i = 0; i < maxPossibleCodes; i++) {
+        allPossibleCodes[i] = [];
+    }
 
-        //codes erstellen
-        let max = 1;
+    //codes erstellen
+    let max = 1;
 
-        //for jede spalte i 
-        for (let i = 0; i < positionCount; i++) {
-            let colIndex = 0;
-            let counter = 0;
+    //for jede spalte i 
+    for (let i = 0; i < positionCount; i++) {
+        let colIndex = 0;
+        let counter = 0;
 
-            //für jeden möglichen code
-            for (let j = 0; j < maxPossibleCodes; j++) {
-                //vergib die farbe
-                allPossibleCodes[j][i] = arrColors[colIndex];
-                //und zähle weiter
-                counter++;
-                //max berechnet, wie oft hintereinander die gleiche farbe verwendet wird
-                //codemäßig. 111, 112, 113 - an der 3. stelle wird jedes mal raufgezählt
-                //an der zweiten erst dann, wenn max erreicht ist
+        //für jeden möglichen code
+        for (let j = 0; j < maxPossibleCodes; j++) {
+            //vergib die farbe
+            allPossibleCodes[j][i] = arrColors[colIndex];
+            //und zähle weiter
+            counter++;
+            //max berechnet, wie oft hintereinander die gleiche farbe verwendet wird
+            //codemäßig. 111, 112, 113 - an der 3. stelle wird jedes mal raufgezählt
+            //an der zweiten erst dann, wenn max erreicht ist
 
-                if (counter == max) {
-                    colIndex++;
-                    if (colIndex == colorCount) {
-                        colIndex = 0;
-                    }
-                    counter = 0;
+            if (counter == max) {
+                colIndex++;
+                if (colIndex == colorCount) {
+                    colIndex = 0;
                 }
+                counter = 0;
             }
-            //und für die nächste spalte ist das max dann höher
-            max *= colorCount;
         }
+        //und für die nächste spalte ist das max dann höher
+        max *= colorCount;
+    }
 }
-//1 use: createAllPossibleCodes
+
+/* if doubles are not allowed, all codes with doubles are removed from allPossibleCodes*/
 function removeDoubles() {
     let codesToDrop = [];
     let codeCount = 0;
@@ -225,7 +297,76 @@ function removeDoubles() {
     $("#idPossible").text("codes possible: " + allPossibleCodes.length);
 }
 
+//#endregion
 
+
+//#region take guess
+//player only
+
+/*when player does his guess, 
+ * if it's turn 1, the pc will create all possible codes 
+ (this is to update the remaining possibilities after each guess)
+ *add 1 to number of guesses
+ * write the guessed code to the array where all guessed codes are stored
+ * update UI
+ * calculate and add answer
+ * reset UI and codeToGuess
+ */
+function takeGuess() {
+    if (guess == 0) createAllPossibleCodes();
+    guess++;
+    writeCodeToAllCodes();
+    createAndColorTablerow();
+    answer();
+    resetCodeToGuess();
+   
+}
+
+//pc only
+
+
+function cpGuesses() {
+    guess++;
+    do {
+        guessedCode = createCode();
+    } while (guess>1 && !checkIfCodeIsValid())
+
+  
+    writeCodeToAllCodes();
+
+    createAndColorTablerow();
+
+    //  $("#idDoubleGuesses").text(doubleguesses + " doubleguesses avoided");
+    //  $("#idImpossible").text(impossibleCodes + " impossible codes avoided");
+
+}
+
+/* Creates a random Code based on possible colors 
+ * 
+ 
+ */
+function createCode() {
+    //I need an array that I can alter if doubles
+    let newCode = [];
+    let usedColors = [];
+    let useCount = colorCount;
+
+    //fill temporary array with possible colors
+    for (let i = 0; i < colorCount; i++) {
+        usedColors[i] = arrColors[i];
+    }
+
+    for (let i = 0; i < positionCount; i++) {
+        let rand = Math.floor(Math.random() * useCount);
+        //set color in code to ranom possible color
+        newCode[i] = usedColors[rand];
+        if (!doubles) {
+            usedColors.splice(rand, 1); //discard the color just used
+            useCount--;
+        }
+    }
+    return newCode;
+}
 function checkIfCodeIsValid() {
     let valid = true;
 
@@ -259,6 +400,9 @@ function checkIfCodeIsValid() {
 
 }
 
+
+//both
+
 function writeCodeToAllCodes() {
     allGuessedCodes[guess] = [];
     for (let i = 0; i < guessedCode.length; i++) {
@@ -287,25 +431,28 @@ function createAndColorTablerow() {
     }
 }
 
-function cpGuesses() {
-    guess++;
-    do {
-        guessedCode = createCode();
-    } while (guess>1 && !checkIfCodeIsValid())
+//#endregion
 
-  
-    writeCodeToAllCodes();
+//#region answer
 
-    createAndColorTablerow();
+function giveAnswer() {
+    // let result = " ";
+    let xCount = Number($("#idX").val());
+    let oCount = Number($("#idO").val());
 
-    //  $("#idDoubleGuesses").text(doubleguesses + " doubleguesses avoided");
-    //  $("#idImpossible").text(impossibleCodes + " impossible codes avoided");
-
+    //check if the user answered correctly
+    calculateAnswer(guessedCode, codeToGuess);
+    if (red != xCount || white != oCount)
+        alert("Plz check your answer. There seems to be a mistake.");
+    else {
+        writeAnswer();
+        if (!codeFound) {
+            cpGuesses();        
+            $("#idX").val(0);
+            $("#idO").val(0);
+        }
+    }
 }
-
-
-
-
 
 function answer() {
     calculateAnswer(guessedCode, codeToGuess);
@@ -314,30 +461,7 @@ function answer() {
         cpGuesses();    
     }
     
-function autosolve() {
-while (!codeFound) {
-    if (guesser == "Player")  cpGuesses();       
-     answer();
-    }
-}
 
-function endGame() {
- let answer = guesser == "Player" ? "You cracked the code!" : "Computer cracked the code!";
-        $("#idGuessedCode").after(answer);
-        $("#idCode").hide();
-        $("#idAnswer").hide();
-        $("#idBtnSolShow").hide();
-        $("#idShowCode").show();
-}
-
-
-/*Player
- * one guess only made by PC
- * */
-function autoguess() {
-    cpGuesses();
-    answer();
-}
 
 /* Writes answer to screen 
  * and into the array where already guessed codes are saved
@@ -448,6 +572,42 @@ function removeImpossibleCodes() {
         $("#idPossible").text("codes possible: " + allPossibleCodes.length);
 
 }
+
+//#endregion
+
+
+//#region autoplay
+
+/*Player
+ * one guess only made by PC
+ * */
+function autoguess() {
+    cpGuesses();
+    answer();
+}
+
+
+function autosolve() {
+while (!codeFound) {
+    if (guesser == "Player")
+        cpGuesses();
+    answer();
+    }
+}
+//#endregion
+
+//#region end game
+function endGame() {
+ let winMessage = guesser == "Player" ? "You cracked the code!" : "Computer cracked the code!";
+    $("#idGuessedCode").after(winMessage);
+        $("#idCode").hide();
+        $("#idAnswer").hide();
+        $("#idBtnSolShow").hide();
+        $("#idShowCode").show();
+}
+
+//#endregion
+
 
 
 
